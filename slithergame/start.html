@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SnakeBattle Start</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<!--     <link rel="stylesheet" href="css/style.css"> -->
+    <style>
+        body { margin:0; background:linear-gradient(135deg,#232946,#a9def9 85%); }
+        .head-part {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 0 2em;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info img { width:48px;height:48px;border-radius:50%;margin-right:12px;}
+        .user-info span { color:#fff;font-size:1.2em;font-weight:bold; }
+        .main-part {
+            min-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;   
+            padding-top: 2em;
+        }
+        .content-flex-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 2em;
+            align-items: center;
+            width: 100%;
+        }
+        .card-box {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(60,60,90,0.18);
+            padding: 2em 2em 1.3em 2em;
+            min-width: 320px;
+            max-width: 520px;
+            box-sizing: border-box;
+        }
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 1.1em;
+            color: #2d334a;
+            letter-spacing: 2px;
+        }
+        .mode-btn {
+            display:inline-block;
+            margin: 0 0.6em 0.7em 0;
+            font-size: 1.1em;
+            padding: 0.7em 2.2em;
+            border: none;
+            border-radius: 32px;
+            background: #6d9bd1;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-btn.selected, .mode-btn:active { background: #ffc300; color: #232946;}
+        .skin-preview {
+            display: flex; align-items: center; gap: 1em; justify-content:center;
+        }
+        .skin-arrow {
+            font-size:2em; cursor:pointer; color:#6d9bd1; user-select:none;
+        }
+        .skin-img {
+            width:50px; height:50px; border-radius:10px; border:2px solid #6d9bd1; background:#eee;
+        }
+        .foot-part { height:30px;text-align:center;color:#eee;font-size:0.95em;margin-top:2em;}
+        .input-name {
+            width: 100%;
+            font-size: 1.2em;
+            padding: 0.5em 0.8em;
+            border: 1.5px solid #a9def9;
+            border-radius: 8px;
+            margin-bottom: 0.6em;
+        }
+        .desc {
+            color:#444; font-size:1.08em; line-height:1.7; 
+        }
+        #start-game-btn {
+            margin: 1em auto 0 auto;  
+            display: block;
+            padding: 0.9em 3em;
+            font-size: 1.3em;
+            background: #232946;
+            color: #fff;
+            border: none;
+            border-radius: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 3px 16px rgba(40,40,80,0.12);
+            transition: background 0.2s;
+        }
+        #start-game-btn:hover { background:#6d9bd1; color:#232946; }
+    </style>
+</head>
+<body class="wrapper">
+    <div class="head-part">
+        <div class="user-info">
+            <img src="./images/head.png"/>
+            <span id="display-name">player</span>
+        </div>
+    </div>
+    <div class="main-part">
+        <div class="content-flex-layout">
+
+            <div class="card-box">
+                <div class="card-title">choose mode</div>
+                <button class="mode-btn selected" data-mode="classic">classic</button>
+                <!--<button class="mode-btn" data-mode="time">限时模式</button>-->
+                <button class="mode-btn" data-mode="time">online</button>
+            </div>
+
+            <div class="card-box">
+                <div class="card-title">choose skin</div>
+                <div style="margin-top:1.2em;">
+                    <div>head skin</div>
+                    <div class="skin-preview">
+                        <span class="skin-arrow" id="prev-head">&#8592;</span>
+                        <img id="head-skin-img" class="skin-img" src="images/head.png">
+                        <span class="skin-arrow" id="next-head">&#8594;</span>
+                    </div>
+                </div>
+                <div style="margin-top:1.1em;">
+                    <div>body skin</div>
+                    <div class="skin-preview">
+                        <span class="skin-arrow" id="prev-body">&#8592;</span>
+                        <img id="body-skin-img" class="skin-img" src="images/body/0.png">
+                        <span class="skin-arrow" id="next-body">&#8594;</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-box">
+
+                <div class="desc">
+                    <b>Slither game:</b>:Control your snake, devour food and other snakes, become the biggest longest snake!<br>
+                    Different modes and personalized skins are available.<br>
+                    Use the mouse/finger to control the direction, click to accelerate, and be careful not to hit other snakes!
+                </div>
+            </div>
+
+            <button id="start-game-btn">START</button>
+        </div>
+    </div>
+    <div class="foot-part">     </div>
+
+
+    <audio id="bgm" loop autoplay style="display:none;">
+        <source src="bgm.mp3" type="assets/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+
+        let mode = "classic";
+        document.querySelectorAll(".mode-btn").forEach(btn=>{
+            btn.onclick = ()=>{
+                document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("selected"));
+                btn.classList.add("selected");
+                mode = btn.dataset.mode;
+            }
+        });
+ 
+        const headSkins = ["images/head.png","images/head2.png","images/head3.png"];
+        const bodySkins = Array.from({length:13},(_,i)=>`images/body/${i}.png`);
+        let headIdx = 0, bodyIdx = 0;
+        function updateSkins(){
+            document.getElementById("head-skin-img").src = headSkins[headIdx];
+            document.getElementById("body-skin-img").src = bodySkins[bodyIdx];
+        }
+        document.getElementById("prev-head").onclick = ()=>{headIdx=(headIdx-1+headSkins.length)%headSkins.length;updateSkins();}
+        document.getElementById("next-head").onclick = ()=>{headIdx=(headIdx+1)%headSkins.length;updateSkins();}
+        document.getElementById("prev-body").onclick = ()=>{bodyIdx=(bodyIdx-1+bodySkins.length)%bodySkins.length;updateSkins();}
+        document.getElementById("next-body").onclick = ()=>{bodyIdx=(bodyIdx+1)%bodySkins.length;updateSkins();}
+        // 开始按钮逻辑
+        document.getElementById("start-game-btn").onclick = function(){
+            location.href = `index.html?mode=${mode}&head=${encodeURIComponent(headSkins[headIdx])}&body=${encodeURIComponent(bodySkins[bodyIdx])}`;
+        }
+        // 自动解锁BGM
+        window.addEventListener('click', function unlockAudio() {
+            const bgm = document.getElementById('bgm');
+            if (bgm) {
+                bgm.volume = 0.3;
+                bgm.muted = false;
+                bgm.play();
+            }
+            window.removeEventListener('click', unlockAudio);
+        });
+    </script>
+</body>
+</html>

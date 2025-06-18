@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Slither game</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<!--     <link rel="stylesheet" href="css/style.css"> -->
+    <style>
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        #stage {
+            display: block;
+            position: absolute;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+        }
+        .cover.end-scene { z-index: 1000; }
+    </style>
+</head>
+<body>
+
+<canvas id="stage"></canvas>
+
+<div class="cover end-scene" id="game-end-scene" style="display:none">
+    <div class="report-board">
+        <div class="report-title">game over</div>
+        <div class="report-content">
+            <table>
+                <tr>
+                    <td>score</td>
+                    <td id="snake-length" class="number">0</td>
+                </tr>
+                <tr>
+                    <td>kill</td>
+                    <td id="snake-kill" class="number">0</td>
+                </tr>
+            </table>
+        </div>
+        <div class="option-panel">
+            <button class="panel-btn backward" id="backward-btn">back</button>
+            <button class="panel-btn repeat" id="repeat-btn">again</button>
+        </div>
+    </div>
+</div>
+
+<audio id="die-sfx" preload="auto">
+    <source src="die.mp3" type="audio/mpeg">
+</audio>
+<audio id="bgm" loop autoplay>
+    <source src="bgm.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    window.addEventListener('click', function unlockAudio() {
+        const bgm = document.getElementById('bgm');
+        if (bgm) {
+            bgm.muted = false;
+            bgm.volume = 0.3;
+            bgm.play();
+        }
+        window.removeEventListener('click', unlockAudio);
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('repeat-btn').onclick = function() {
+            window.location.reload();
+        };
+        document.getElementById('backward-btn').onclick = function() {
+            window.location.href = "2.html";
+        };
+    });
+</script>
+
+<script type="text/javascript" src="js/food.js"></script>
+<script type="text/javascript" src="js/snake.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
+
+<script>
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('stage');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+
+        if (window.g) {
+            g.canvas = canvas;
+            g.context = canvas.getContext("2d");
+        }
+    });
+</script>
+
+</body>
+</html>
